@@ -20,7 +20,7 @@ def save_data(todos):
 # TODO 항목 추가 함수
 def add_todo():
     todo_text = st.text_input('TODO 내용 입력:')
-    stars = st.selectbox('별점 선택:', [1, 2, 3, 4, 5])
+    stars = st.radio('중요도:', [1, 2, 3, 4, 5], index=4, format_func=lambda x: '★' * x)
     if st.button('추가'):
         if todo_text:
             todos.append({'text': todo_text, 'stars': stars})
@@ -29,9 +29,9 @@ def add_todo():
 
 # TODO 항목 삭제 함수
 def delete_todo():
-    todo_index = st.selectbox('삭제할 TODO 선택:', range(len(todos)), format_func=lambda x: todos[x]['text'])
-    if st.button('삭제'):
-        if todos:
+    if todos:
+        todo_index = st.selectbox('삭제할 TODO 선택:', range(len(todos)), format_func=lambda x: todos[x]['text'])
+        if st.button('삭제'):
             todos.pop(todo_index)
             save_data(todos)
             st.experimental_rerun()
@@ -43,7 +43,7 @@ todos = load_data()
 def display_todos():
     st.header('TODO 리스트')
     for idx, todo in enumerate(sorted(todos, key=lambda x: x['stars'], reverse=True)):
-        st.write(f"{idx+1}. {todo['text']} (별점: {todo['stars']})")
+        st.write(f"{idx+1}. {todo['text']} (중요도: {'★' * todo['stars']})")
 
 # Streamlit 앱 구조
 st.title('TODO 관리 앱')
@@ -52,5 +52,3 @@ st.subheader('TODO 추가')
 add_todo()
 st.subheader('TODO 삭제')
 delete_todo()
-
-
